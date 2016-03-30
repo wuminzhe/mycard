@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <script src="jquery-1.7.2.min.js"></script>
+    <script src="raphael-min.js"></script>
+    <script src="jquery.pep.js"></script>
+</head>
+<body>
+    <div id="card" style="overflow:hidden;background-color:blue;margin-left:auto;margin-right:auto;">
+
+    </div>
+    <div id="test"></div>
+</body>
+</html>
+<script type="text/javascript">
+	function inspect(e) {
+        var msg = new Array();
+        for (prop in e) {
+            msg.push(prop + ": " + e[prop]);
+        };
+
+        alert(msg.join('\n'));
+    }
+    function getImgSize(imgSrc, cb) {
+        var newImg = new Image();
+        newImg.onload = function() {
+          var height = newImg.height;
+          var width = newImg.width;
+          cb(width, height);
+          //alert ('The image size is '+width+'*'+height);
+        }
+        newImg.src = imgSrc; // this must be done AFTER setting onload
+    }
+    function log(msg) {
+        var test = $('#test');
+        test.prepend(msg +"<br>");
+    }
+
+    var card = $('#card');
+    //init card size
+    var card_width = $('body').width();
+    var card_height = card_width * 1.5;
+    //alert(card_width+", "+card_height);
+    card.css('width', (card_width)+"px");
+    card.css('height', (card_height)+"px");
+
+    var paper = Raphael('card');
+
+    getImgSize("images/pic.jpg", function(w, h){
+        var img = paper.image("images/pic.jpg", 0, 0, w, h);
+
+        var options = {
+            debug:          true,
+            
+            multiplier:     1.2
+        };
+
+        $(img.node).pep(options);
+        
+        
+        
+
+    });
+
+
+    
+</script>

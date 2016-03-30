@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>test</title>
+    <script src="js/quo.js"></script>
+</head>
+<body>
+    <div id="test" style="background-color:yellow;width:100px;height:100px"></div>
+    <script>
+        if (typeof String.prototype.start_with != 'function') {
+          String.prototype.start_with = function (str){
+            return this.slice(0, str.length) == str;
+          };
+        }
+
+        function inspect(e, options) {
+            if(options==null){
+                options = {};
+            }
+            var onlykey = options['onlykey']==null ? false : options['onlykey']
+            var prefix = options['prefix']==null ? '' : options['prefix']
+            var msg = new Array();
+            for (prop in e) {
+                if(prop.start_with(prefix)){
+                    if(onlykey==true){
+                        msg.push(prop);
+                    }else{
+                        msg.push(prop + ": " + e[prop]);
+                    }
+                }
+                
+            };
+
+            if(onlykey==true){
+                alert(msg.join(', '));
+            }else{
+                alert(msg.join('\n'));
+            }
+            
+        }
+
+        $$('body').ready(function() {
+            //Lungo.View.Aside.show('#features');
+            //inspect($$('#test'), {'prefix':'', 'onlykey':true});
+            // $$('#test').touch(function(e){
+            //     //inspect(e, {'onlykey':true});
+            //     alert('aaaa');
+            // });
+            $$('#test').drag(function(e){
+                //inspect(e, {'onlykey':true});
+                alert('ssss');
+            });
+        });
+    </script>
+</body>
+</html>

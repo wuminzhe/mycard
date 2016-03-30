@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <script src="lungo/src/lib/quo.debug.js"></script>
+
+</head>
+<body>
+	<div id="container" style="width:200px;height:200px;background-color:pink"></div>
+</body>
+</html>
+<script type="text/javascript">
+	function inspect(e) {
+        var msg = new Array();
+        for (prop in e) {
+            msg.push(prop + ": " + e[prop]);
+        };
+
+        alert(msg.join('\n'));
+    }
+    var _touchInfo = function(event, type, el) {
+        el.addClass('success');
+        console.log('Captured', event);
+        $$('article').html('\
+            Event: ' + type + '\
+            Fingers: ' + event.fingers);
+    }
+
+    $$('#container').pinch(function(event){
+        inspect(event);
+        
+    });
+</script>

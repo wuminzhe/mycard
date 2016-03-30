@@ -1,0 +1,362 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>LungoJS 1.2</title>
+    <meta name="description" content="">
+    <meta name="author" content="Javier Jiménez Villar (@soyjavi)">
+    <!-- Mobile viewport optimization http://goo.gl/b9SaQ -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta http-equiv="cleartype" content="on">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- For iPhone 4 with high-resolution Retina display: -->
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/images/icon@2x.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/images/icon-72.png">
+    <link rel="apple-touch-icon-precomposed" href="assets/images/icon.png">
+    <link rel="apple-touch-startup-image" href="assets/images/default.png">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="./lungo.js/lungo-1.2.css">
+    <link rel="stylesheet" href="./lungo.js/lungo.theme.default.css">
+    <style type="text/css">
+    .shadow {
+      -moz-box-shadow:    3px 3px 10px #aaa;
+      -webkit-box-shadow: 3px 3px 10px #aaa;
+      box-shadow:         3px 3px 10px #aaa;
+    }
+    </style>
+</head>
+
+<body class="app">
+    <!--
+        First, you have to do is create a LungoJS Application instance in the file app.js.
+        ...and use a Webkit browser as Chrome or Safari.
+    -->
+    <section id="hello_world">
+        <!-- <header id="header1" data-title="我明信片">
+            
+        </header> -->
+
+        <footer>
+            <a href="#article-1" data-target="section" class="button onright" style="margin-right:10px">下一步</a>
+        </footer>
+
+        <article id="article-1">
+            <a href="###" onclick="zoomout();">放大</a>
+            <a href="###" onclick="zoomin();">缩小</a>
+            <div id="card" class="shadow" style="position:absolute;background-color:white"></div>
+            <div id="img_window" style="position:absolute;overflow:hidden;background:url(./assets/images/bg.png)"></div>
+            <div id="text" style="position:absolute;overflow:hidden;background-color:white">
+                现年六十一岁的万科董事长王石去年游学哈佛后逐渐淡出公众视野，只在微博上时不时发布一下游学感慨，不料却在这几日成为互联网上最大八卦新闻的主角。</div>
+            <!-- <div id="text" style="position:absolute;overflow:hidden;background-color:white">
+                现年六十一岁的万科董事长王石去年游学哈佛后逐渐淡出公众视野，只在微博上时不时发布一下游学感慨，不料却在这几日成为互联网上最大八卦新闻的主角。现年六十一岁的万科董事长王石去年游学哈佛后逐渐淡出公众视野，只在微博上时不时发布一下游学感慨，不料却在这几日成为互联网上最大八卦新闻的主角。现年六十一岁的万科董现年六十一岁的万科。</div> -->
+            <div id="test"></div>
+
+        </article>
+    </section>
+
+    <section id="copyright">
+        <header data-back="home" data-title="Copyright"></header>
+        <article></article>
+    </section>
+
+    <aside id="aside-example"></aside>
+
+    
+    <!-- LungoJS (Production mode) -->
+    <script src="lungo.js/lungo-1.2.js"></script>
+    <!-- LungoJS - Sandbox App -->
+    <script src="app/app.js"></script>
+    <script src="app/data.js"></script>
+    <script src="app/events.js"></script>
+    <script src="app/services.js"></script>
+    <script src="app/view.js"></script>
+
+    <script src="assets/javascripts/jquery-1.7.2.min.js"></script>
+    <script src="assets/javascripts/raphael-min.js"></script>
+    <script src="assets/javascripts/jquery.event.move.js"></script>
+
+
+</body>
+</html>
+
+<script type="text/javascript">
+
+    if (typeof String.prototype.start_with != 'function') {
+      String.prototype.start_with = function (str){
+        return this.slice(0, str.length) == str;
+      };
+    }
+
+    function inspect(e, options) {
+        if(options==null){
+            options = {};
+        }
+        var onlykey = options['onlykey']==null ? false : options['onlykey']
+        var prefix = options['prefix']==null ? '' : options['prefix']
+        var msg = new Array();
+        for (prop in e) {
+            if(prop.start_with(prefix)){
+                if(onlykey==true){
+                    msg.push(prop);
+                }else{
+                    msg.push(prop + ": " + e[prop]);
+                }
+            }
+            
+        };
+
+        if(onlykey==true){
+            alert(msg.join(', '));
+        }else{
+            alert(msg.join('\n'));
+        }
+        
+    }
+
+    function getImgSize(imgSrc, cb) {
+        var newImg = new Image();
+        newImg.onload = function() {
+          var height = newImg.height;
+          var width = newImg.width;
+          cb(width, height);
+          //alert ('The image size is '+width+'*'+height);
+        }
+        newImg.src = imgSrc; // this must be done AFTER setting onload
+    }
+
+    function log(msg) {
+        var test = $('#test');
+        test.prepend(msg +"<br>");
+    }
+    
+    var paper = null;
+    var img = null;
+    var src = null;
+    var scale = 1;
+
+    function zoomout(){
+        if(src!=null){
+            img.remove();
+            scale = scale * 1.2;
+            add_image(src, scale);
+        }
+    }
+
+    function zoomin(){
+        if(scale>1){
+            if(src!=null){
+                img.remove();
+                scale = scale / 1.2;
+                add_image(src, scale);
+            }
+        }
+        
+    }
+
+    function kickback(img, width, height, img_window_width, img_window_height){
+        
+        if( width > img_window_width ) {
+            if(img.attr('x')>0){
+                img.attr('x', 0);
+            }
+            var dx = width-img_window_width;
+            if(img.attr('x') < -dx){
+                img.attr('x', -dx);
+            }
+        } else {
+            if(img.attr('x')<0){
+                img.attr('x', 0);
+            }
+            var dx = img_window_width-width;
+            if(img.attr('x') > dx){
+                img.attr('x', dx);
+            }
+        }
+
+        if( height > img_window_height ) {
+            if(img.attr('y')>0){
+                img.attr('y', 0);
+            }
+            var dy = height-img_window_height;
+            if(img.attr('y') < -dy){
+                img.attr('y', -dy);
+            }
+        } else {
+            if(img.attr('y')<0){
+                img.attr('y', 0);
+            }
+            var dy = img_window_height-height;
+            if(img.attr('y') > dy){
+                img.attr('y', dy);
+            }
+        }
+
+    }
+
+    function init_card(vertical, fill){
+        if(!fill) fill=false;
+        //
+        var body = $("#article-1");
+        var card = $('#card');
+        var img_window = $('#img_window');
+        var text = $('#text');
+        //
+        var body_width = body.width();
+        var body_height = body.height();
+
+        //
+        if(vertical==true){
+            var o = body_height/25;
+            var card_height = body_height - o*2;
+            var card_width = card_height / 1.5;
+            //
+            var i = fill==true ? 0 : card_width/10;
+            var img_window_width = card_width - i * 2;
+            var img_window_height = card_height - i * 4; 
+            var img_window_left = (body_width-card_width)/2+i;
+            var img_window_top = o+i;
+            //
+            var text_width = img_window_width;
+            var text_height = i * 1.9;
+            var text_left = img_window_left;
+            var text_top = img_window_top + img_window_height + i/2;
+            //log(text_width);
+            var text_font_size = text_width / 24;
+            
+        }else{
+            var o = body_width/25;
+            var card_width = body_width - o*2;
+            var card_height = card_width / 1.5;
+            //
+            var i = fill==true ? 0 : card_height/10;
+            var img_window_width = card_width - i * 4;
+            var img_window_height = card_height - i * 2;
+            var img_window_left = (body_width-card_width)/2+i;
+            var img_window_top = o+i;
+            //
+            var text_height = img_window_height;
+            var text_width = i * 1.9;
+            var text_left = img_window_left + img_window_width + i/2;
+            var text_top = img_window_top;
+            var text_font_size = text_height / 24;
+        }
+        card.css('width', card_width+"px");
+        card.css('height', card_height+"px");
+        card.css('top', o+"px");
+        card.css('left', (body_width-card_width)/2+'px');
+        //
+        img_window.css('width', img_window_width+"px");
+        img_window.css('height', img_window_height+"px");
+        img_window.css('left', img_window_left+'px');
+        img_window.css('top', img_window_top+'px');
+        //
+        text.css('width', text_width+"px");
+        text.css('height', text_height+"px");
+        text.css('left', text_left+'px');
+        text.css('top', text_top+"px");
+        text.css('font-size', text_font_size+"px");
+        
+        //init paper
+        paper = Raphael('img_window');
+        //inspect(paper, {'prefix':'setSize'});
+        
+    }
+
+    function calc_img_size(img_width, img_height, img_window_width, img_window_height){
+        if( (img_width / img_height) <= (img_window_width / img_window_height) ) {
+            var new_img_width = img_window_width; // 宽变，高随
+            var scale = new_img_width / img_width;
+            var new_img_height = scale * img_height;    
+        } else {
+            var new_img_height = img_window_height; // 高变，宽随
+            var scale = new_img_height / img_height;
+            var new_img_width = scale * img_width;
+        }
+        return { width:new_img_width, height:new_img_height, scale:scale };
+    }
+
+    function add_image(src, scale){
+        var img_window = $('#img_window');
+        var img_window_width = img_window.width();
+        var img_window_height = img_window.height();
+
+        if(scale==null) scale = 1;
+
+        getImgSize(src, function(img_width, img_height){
+            var img_size = calc_img_size(img_width, img_height, img_window_width, img_window_height);
+            img_width = img_size.width * scale;
+            img_height = img_size.height * scale;
+
+            img = paper.image(src, 0, 0, img_width, img_height);
+            kickback(img, img_width, img_height, img_window_width, img_window_height);
+
+            $(img.node).bind('movestart', function(e) {
+                img.ox = img.attr('x');
+                img.oy = img.attr('y');
+            })
+            
+            $(img.node).bind('move', function(e) {
+                //inspect(e);
+                //log(e.deltaX+","+e.deltaY+","+e.distX+","+e.distY);
+                img.attr('x', (img.ox+e.distX));
+                img.attr('y', (img.oy+e.distY));
+            })
+
+            $(img.node).bind('moveend', function(e) {
+                kickback(img, img_width, img_height, img_window_width, img_window_height);
+            })
+            
+        });
+    }
+
+    function letsgo(t){
+
+        if(t=='1'){
+            init_card(true, true);
+        }else if(t=='2'){
+            init_card(false, true);
+        }else if(t=='3'){
+            init_card(true, false);
+        }else if(t=='4'){
+            init_card(false, false);
+        }else{
+            init_card(true, false);
+        }
+
+        src = "./assets/images/pic.jpg";
+        add_image(src);
+
+        
+        //add_image("/Users/wuminzhe/Pictures/QQ20121026-1.png");
+        //add_image("http://pic.52mxp.com/backgrounds/4bf3d25d32bba79bffe2fee7b728b430ce091b19.png")
+        // add_image("./assets/images/small.jpg");
+
+    }
+
+    $(document).ready(function(){
+        var href = window.location.href;
+        var pos = href.indexOf("?")
+
+        t = href.substring(pos+1);
+
+
+        letsgo(t);
+
+        // $(window).resize(function(){
+        //     letsgo();
+        // });
+
+    });
+
+    
+
+    
+
+    
+
+
+
+</script>

@@ -1,0 +1,613 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我爱明信片</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="cleartype" content="on">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/logo114.PNG">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/72.PNG">
+    <link rel="apple-touch-icon-precomposed" href="mages/72.PNG">
+    <link rel="apple-touch-startup-image" href="images/default.png">
+
+    <!-- Lungo - Stylesheets -->
+    <link rel="stylesheet" href="lungo/stylesheets/lungo.css">
+    <link rel="stylesheet" href="lungo/stylesheets/lungo.icon.css">
+    <link rel="stylesheet" href="lungo/stylesheets/lungo.icon.brand.css">
+    <link rel="stylesheet" href="lungo/stylesheets/lungo.theme.default.css">
+
+    <!-- Custom - Stylesheets -->
+    <style type="text/css">
+    .shadow {
+        -moz-box-shadow:    0 0 10px #aaa;
+        -webkit-box-shadow: 0 0 10px #aaa;
+        box-shadow:         0 0 10px #aaa;
+    }
+
+    .card_style_selected{
+        -moz-box-shadow:    0 0 8px #06C;
+        -webkit-box-shadow: 0 0 8px #06C;
+        box-shadow:         0 0 8px #06C;
+    }
+
+    .card_style{
+        border:1px solid #ccc;
+    }
+
+
+    section {
+        background-color:#F4F5F5;
+    }
+
+    section > header {
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+    }
+
+    section > footer {
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      box-shadow: none;
+    }
+
+    .topbar {
+        background: url(images/background_title.png);
+        height:60px;
+        line-height:60px;
+    }
+
+    .bottombar {
+        background:url(images/button_bar_background.png);
+        height:60px;
+    }
+
+    </style>
+</head>
+
+<body class="app">
+    <section id="main" data-transition="slide">
+        <header class="topbar">
+            <div class="centered title">
+                <img src="./images/mailbox.png" style="padding-right:220px;height: 62px;line-height: 55px;"/>
+            </div>
+            <div class="centered title">
+                <img src="./images/words.png" style="padding-left:50px;"/>
+            </div>
+        </header>
+
+        <article id="main-article" style="bottom:60px;top:60px">
+            <div id="card" class="shadow" style="position:absolute;background-color:white"></div>
+            <div id="img_window" style="position:absolute;overflow:hidden;background:url(images/bg.png)"></div>
+            <div id="text" style="position:absolute;overflow:hidden;background-color:white"></div>
+            <a id="zoomout" style="position:absolute;opacity:0.4" href="###" onclick="zoomout();"><img src="./images/zoomout.png" /></a>
+            <a id="zoomin" style="position:absolute;opacity:0.4" href="###" onclick="zoomin();"><img src="./images/zoomin.png" /></a>
+            <!-- <div id="text" style="position:absolute;overflow:hidden;background-color:white">
+                现年六十一岁的万科董事长王石去年游学哈佛后逐渐淡出公众视野，只在微博上时不时发布一下游学感慨，不料却在这几日成为互联网上最大八卦新闻的主角。现年六十一岁的万科董事长王石去年游学哈佛后逐渐淡出公众视野，只在微博上时不时发布一下游学感慨，不料却在这几日成为互联网上最大八卦新闻的主角。现年六十一岁的万科董现年六十一岁的万科。</div> -->
+            <div id="test"></div>
+
+        </article>
+
+        <footer class="bottombar">
+            <div class="six columns left" style="padding-top:7px;padding-left:12px">
+                <a href="###" onclick="rebuild('3');select_card_style('s3');" style="margin-right:8px;">
+                    <img id="s3" class="card_style card_style_selected" src="./images/stencil_1.png" />
+                </a>
+                <a href="###" onclick="rebuild('2');select_card_style('s2');" style="margin-right:8px;">
+                    <img id="s2" class="card_style" src="./images/stencil_2.png" />
+                </a>
+                <a href="###" onclick="rebuild('1');select_card_style('s1');">
+                    <img id="s1" class="card_style" src="./images/stencil_3.png" />
+                </a>
+            </div>
+            
+            <div class="three columns right" style="padding-top:11px;padding-right:10px">
+                <a href="#second" data-router="section" class="button big arcticblue" onclick="get_result();"><span class="icon check"></span><abbr>下一步</abbr></a>
+            </div>
+        </footer>
+    </section>
+
+    <section id="second" data-transition="slide">
+        <header class="topbar">
+            <div class="centered title">
+                <img src="./images/mailbox.png" style="padding-right:220px;height: 62px;line-height: 55px;"/>
+            </div>
+            <div class="centered title">
+                <img src="./images/words.png" style="padding-left:50px;"/>
+            </div>
+        </header>
+        <article class="scroll" style="bottom:60px;top:60px">
+            <form>
+   
+                <label><span style="font-size:1.2em;color:black">收件人信息</span> <span style="color:red">必填</span></label>
+                <input type="text" placeholder="收件人姓名">
+
+                <div class="three columns">
+                    <label class="select">
+                        <select id="receiver_province" class="custom">
+                            <option value="1">省</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="three columns">
+                    <label class="select">
+                        <select id="receiver_city" class="custom">
+                            <option value="1">市</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="three columns">
+                    <label class="select">
+                        <select id="receiver_county" class="custom">
+                            <option value="1">区县</option>
+                        </select>
+                    </label>
+                </div>
+
+                <input type="text" id="receiver_postcode" placeholder="收件人邮编">
+
+                <div class="ten columns">
+                    <label><span style="font-size:1.2em;color:black">写下祝福的话</span></label>
+                </div>
+                <textarea></textarea>
+
+                <hr/>
+
+                <label><span style="font-size:1.2em;color:black">寄件人信息</span></label>
+                <input type="text" placeholder="Email">
+                <input type="text" placeholder="寄件人姓名">
+                <div class="three columns">
+                    <label class="select">
+                        <select id="sender_province" class="custom">
+                            <option value="1">省</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="three columns">
+                    <label class="select">
+                        <select id="sender_city" class="custom">
+                            <option value="1">市</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="three columns">
+                    <label class="select">
+                        <select id="sender_county" class="custom">
+                            <option value="1">区县</option>
+                        </select>
+                    </label>
+                </div>
+
+                <input id="sender_postcode" type="text" placeholder="寄件人邮编">
+
+
+
+                
+            </form>
+        </article>
+        <footer class="bottombar">
+            <div class="four columns" style="padding-top:12px;padding-left:10px">
+                <a href="#back" class="button big arcticblue" data-router="section"><span class="icon left"></span><abbr>上一步</abbr></a>
+            </div>
+            <div class="four columns right" style="padding-top:11px;padding-right:10px">
+                <a href="#" data-router="section" class="button big arcticblue" ><span class="icon check"></span><abbr>下一步</abbr></a>
+            </div>
+        </footer>
+    </section>
+
+    <aside id="features" class="left small">
+        <!-- <header data-title="Features"></header> -->
+        <nav style="padding-left:10px;padding-top:50px">
+            <a href="#aside-example" data-router="article" onclick="rebuild('1');"><span class="icon clock"></span></a>
+            <a href="#aside-example" data-router="article" onclick="rebuild('2');"><span class="icon clock"></span></a>
+            <a href="#aside-example" data-router="article" onclick="rebuild('3');"><span class="icon clock"></span></a>
+        </nav>
+        
+    </aside>
+
+    
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/raphael-min.js"></script>
+    <script src="js/jquery.event.move.js"></script>
+    <script src="js/postcodes.js"></script>
+    <!-- Lungo - Dependencies -->
+    <script src="lungo/javascripts/quo.js"></script>
+    <script src="lungo/javascripts/lungo.js"></script>
+    <!-- Lungo - Sandbox App -->
+    <script>
+        Lungo.init({
+            name: 'Kitchen Sink',
+            version: '2.0'
+        });
+
+        Lungo.ready(function() {
+            letsgo('3');
+            //Lungo.View.Aside.show('#features');
+            //inspect(Lungo.dom('#text'), {'prefix':'drag'});
+            Lungo.dom('#text').drag(function(e){
+                //inspect(e, {'onlykey':true});
+                alert('ssss');
+            });
+        });
+    </script>
+</body>
+</html>
+<script type="text/javascript">
+    
+
+    function get_result(){
+        var img_window = $('#img_window');
+        // alert("position:"+img.attr('x')+","+img.attr('y')+"; img_window:"+img_window.width()+","+img_window.height()+"; img:"+img.attr('width')+","+img.attr('height'));
+    }
+
+    function select_card_style(img_id){
+        $('img.card_style').removeClass('card_style_selected');
+        $('#'+img_id).addClass('card_style_selected');
+    }
+
+    if (typeof String.prototype.start_with != 'function') {
+      String.prototype.start_with = function (str){
+        return this.slice(0, str.length) == str;
+      };
+    }
+
+    function inspect(e, options) {
+        if(options==null){
+            options = {};
+        }
+        var onlykey = options['onlykey']==null ? false : options['onlykey']
+        var prefix = options['prefix']==null ? '' : options['prefix']
+        var msg = new Array();
+        for (prop in e) {
+            if(prop.start_with(prefix)){
+                if(onlykey==true){
+                    msg.push(prop);
+                }else{
+                    msg.push(prop + ": " + e[prop]);
+                }
+            }
+            
+        };
+
+        if(onlykey==true){
+            alert(msg.join(', '));
+        }else{
+            alert(msg.join('\n'));
+        }
+        
+    }
+
+    function getImgSize(imgSrc, cb) {
+        var newImg = new Image();
+        newImg.onload = function() {
+          var height = newImg.height;
+          var width = newImg.width;
+          cb(width, height);
+        }
+        newImg.src = imgSrc; // this must be done AFTER setting onload
+    }
+
+    function log(msg) {
+        var test = $('#test');
+        test.prepend(msg +"<br>");
+    }
+    
+    var paper = null;
+    var img = null;
+    var src = null;
+    var scale = 1;
+
+    function zoomout(){
+        if(src!=null){
+            img.remove();
+            scale = scale * 1.2;
+            add_image(src, scale);
+        }
+    }
+
+    function zoomin(){
+        if(scale>1){
+            if(src!=null){
+                img.remove();
+                scale = scale / 1.2;
+                add_image(src, scale);
+            }
+        }
+    }
+
+    function kickback(img, width, height, img_window_width, img_window_height){
+        
+        if( width > img_window_width ) {
+            if(img.attr('x')>0){
+                img.attr('x', 0);
+            }
+            var dx = width-img_window_width;
+            if(img.attr('x') < -dx){
+                img.attr('x', -dx);
+            }
+        } else {
+            if(img.attr('x')<0){
+                img.attr('x', 0);
+            }
+            var dx = img_window_width-width;
+            if(img.attr('x') > dx){
+                img.attr('x', dx);
+            }
+        }
+
+        if( height > img_window_height ) {
+            if(img.attr('y')>0){
+                img.attr('y', 0);
+            }
+            var dy = height-img_window_height;
+            if(img.attr('y') < -dy){
+                img.attr('y', -dy);
+            }
+        } else {
+            if(img.attr('y')<0){
+                img.attr('y', 0);
+            }
+            var dy = img_window_height-height;
+            if(img.attr('y') > dy){
+                img.attr('y', dy);
+            }
+        }
+
+    }
+
+    function init_card(vertical, fill){
+        if(!fill) fill=false;
+        //
+        var body = $("#main-article");
+        var card = $('#card');
+        var img_window = $('#img_window');
+        var text = $('#text');
+        var zoomout = $('#zoomout');
+        var zoomin = $('#zoomin');
+        // var style_change = $('#style_change');
+        // var style_change_wrap = $('#style_change_wrap');
+        
+        
+        //
+        var body_width = body.width();
+        var body_height = body.height();
+
+        //
+        if(vertical==true){
+            var o = body_height/25;
+            var card_height = body_height - o*2;
+            var card_width = card_height / 1.5;
+            var card_left = (body_width-card_width)/2;
+            var card_top = o;
+            //
+            var i = fill==true ? 0 : card_width/10;
+            var img_window_width = card_width - i * 2;
+            var img_window_height = card_height - i * 4; 
+            var img_window_left = (body_width-card_width)/2+i;
+            var img_window_top = card_top+i;
+            //
+            var text_width = img_window_width;
+            var text_height = i * 1.9;
+            var text_left = img_window_left;
+            var text_top = img_window_top + img_window_height + i/2;
+            //log(text_width);
+            var text_font_size = text_width / 24;
+            
+        }else{ //横着
+            var o = body_width/25;
+            var card_width = body_width - o*2;
+            var card_height = card_width / 1.5;
+            var card_left = (body_width-card_width)/2;
+            var card_top = (body_height-card_height)/2;
+            //
+            var i = fill==true ? 0 : card_height/10;
+            var img_window_width = card_width - i * 4;
+            var img_window_height = card_height - i * 2;
+            var img_window_left = (body_width-card_width)/2+i;
+            var img_window_top = card_top+i;
+            //
+            var text_height = img_window_height;
+            var text_width = i * 1.9;
+            var text_left = img_window_left + img_window_width + i/2;
+            var text_top = img_window_top;
+            var text_font_size = text_height / 24;
+        }
+        card.css('width', card_width+"px");
+        card.css('height', card_height+"px");
+        card.css('left', card_left+'px');
+        card.css('top', card_top+"px");
+        //
+        img_window.css('width', img_window_width+"px");
+        img_window.css('height', img_window_height+"px");
+        img_window.css('left', img_window_left+'px');
+        img_window.css('top', img_window_top+'px');
+        //
+        text.css('width', text_width+"px");
+        text.css('height', text_height+"px");
+        text.css('left', text_left+'px');
+        text.css('top', text_top+"px");
+        text.css('font-size', text_font_size+"px");
+        text.html('现年六十一岁的万科董事长王石去年游学哈佛后逐渐淡出公众视野，只在微博上时不时发布一下游学感慨，不料却在这几日成为互联网上最大八卦新闻的主角。');
+        //
+        zoomout.css('left', (img_window_left+img_window_width-32)+"px");
+        zoomout.css('top', (img_window_top+img_window_height-32)+"px");
+        zoomin.css('left', (img_window_left+img_window_width-32)+"px");
+        zoomin.css('top', (img_window_top+img_window_height-64)+"px");
+        //
+        // style_change.css('height', '50px');
+        // style_change.css('top', (body_height-50)+"px");
+        // style_change_wrap.css('left', (body_width/2-80)+'px');
+        
+        //init paper
+        paper = Raphael('img_window');
+        
+        
+    }
+
+    function calc_img_size(img_width, img_height, img_window_width, img_window_height){
+        if( (img_width / img_height) <= (img_window_width / img_window_height) ) {
+            var new_img_width = img_window_width; // 宽变，高随
+            var scale = new_img_width / img_width;
+            var new_img_height = scale * img_height;    
+        } else {
+            var new_img_height = img_window_height; // 高变，宽随
+            var scale = new_img_height / img_height;
+            var new_img_width = scale * img_width;
+        }
+        return { width:new_img_width, height:new_img_height, scale:scale };
+    }
+
+    function add_image(src, scale){
+        var img_window = $('#img_window');
+        var img_window_width = img_window.width();
+        var img_window_height = img_window.height();
+
+        if(scale==null) scale = 1;
+
+        getImgSize(src, function(img_width, img_height){
+            var img_size = calc_img_size(img_width, img_height, img_window_width, img_window_height);
+            img_width = img_size.width * scale;
+            img_height = img_size.height * scale;
+            
+
+            img = paper.image(src, 0, 0, img_width, img_height);
+            kickback(img, img_width, img_height, img_window_width, img_window_height);
+
+            $(img.node).bind('movestart', function(e) {
+                img.ox = img.attr('x');
+                img.oy = img.attr('y');
+            })
+            
+            $(img.node).bind('move', function(e) {
+                //inspect(e);
+                //log(e.deltaX+","+e.deltaY+","+e.distX+","+e.distY);
+                img.attr('x', (img.ox+e.distX));
+                img.attr('y', (img.oy+e.distY));
+            })
+
+            $(img.node).bind('moveend', function(e) {
+                kickback(img, img_width, img_height, img_window_width, img_window_height);
+            })
+            
+        });
+    }
+
+    function rebuild(t){
+        //inspect(paper, {'onlykey':true});
+        paper.remove();
+        letsgo(t);
+    }
+
+    var t = null;
+    function letsgo(t){
+
+        if(t=='1'){
+            init_card(true, true);
+        }else if(t=='2'){
+            init_card(false, true);
+        }else if(t=='3'){
+            init_card(true, false);
+        }else if(t=='4'){
+            init_card(false, false);
+        }else{
+            init_card(true, false);
+        }
+
+        src = "images/pic.jpg";
+        add_image(src);
+
+        
+        //add_image("/Users/wuminzhe/Pictures/QQ20121026-1.png");
+        //add_image("http://pic.52mxp.com/backgrounds/4bf3d25d32bba79bffe2fee7b728b430ce091b19.png")
+        // add_image("./assets/images/small.jpg");
+
+    }
+
+    // $(document).ready(function(){
+
+        
+    //     //inspect($$('#text'), {'onlykey':false, 'prefix':'drag'});
+        
+        
+
+
+    //     // $(window).resize(function(){
+    //     //     letsgo();
+    //     // });
+
+    // });
+
+    var eachkeys = function(obj, cb){
+        var keys = [];
+        for(key in obj){
+            if(key != 'keys'){
+                keys.push(key);
+                cb(key);
+            }
+            
+        }
+        return keys;
+    }
+
+    
+    function haha(zipcodes, province_select_id, city_select_id, county_select_id, postcode_input_id){
+
+        $('#'+province_select_id).change(function(e){
+            var province = $(this).val();
+            $('#'+city_select_id).get(0).options.length = 0; 
+            eachkeys(zipcodes[province], function(key){
+                $('#'+city_select_id).get(0).options.add(new Option(key,key)); 
+            });
+            $('#'+city_select_id).change();
+        });
+
+        $('#'+city_select_id).change(function(e){
+            var province = $('#'+province_select_id).val();
+            var city = $(this).val();
+            $('#'+county_select_id).get(0).options.length = 0; 
+            //
+            var third_level = zipcodes[province][city];
+            if(typeof(third_level) == 'number'){
+                $('#'+postcode_input_id).val(third_level);
+            }else{
+                eachkeys(third_level,function(key){
+                    $('#'+county_select_id).get(0).options.add(new Option(key,key)); 
+                });
+                $('#'+county_select_id).change();
+            }
+        });
+
+        $('#'+county_select_id).change(function(e){
+            var province = $('#'+province_select_id).val();
+            var city = $('#'+city_select_id).val();
+            var county = $(this).val();
+            var zipcode = zipcodes[province][city][county];
+            $('#'+postcode_input_id).val(zipcode);
+        });
+
+        $('#'+province_select_id).get(0).options.length = 0; 
+        eachkeys(zipcodes, function(key){
+            $('#'+province_select_id).get(0).options.add(new Option(key,key));
+        });
+        $('#'+province_select_id).change();
+    }
+
+    haha(zipcodes, 'sender_province', 'sender_city', 'sender_county', 'sender_postcode');
+    haha(zipcodes, 'receiver_province', 'receiver_city', 'receiver_county', 'receiver_postcode');
+    
+
+    
+
+
+
+</script>

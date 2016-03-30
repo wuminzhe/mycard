@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <!-- <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" /> -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <!-- STYLESHEETS -->
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.base.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.layout.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.layout.nav.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.layout.aside.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.layout.article.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.layout.list.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.layout.grid.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.splash.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.button.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.form.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.colour.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.icon.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.icon.brand.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.loading.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.widgets.notification.css">
+    <link rel="stylesheet" href="lungo/src/stylesheets/css/Lungo.theme.default.css">
+
+
+    <!-- YOUR CODE -->
+    <script>
+    Lungo.init({
+        data    : 'Lungo how-to',
+        version : '2.0'
+    });
+    </script>
+
+    <!-- SCRIPTS -->
+    <script src="lungo/src/lib/quo.debug.js"></script>
+    <script src="lungo/src/Lungo.js"></script>
+    <script src="lungo/src/Lungo.init.js"></script>
+    <script src="lungo/src/Lungo.Core.js"></script>
+    <script src="lungo/src/Lungo.Dom.js"></script>
+    <script src="lungo/src/Lungo.Service.js"></script>
+    <script src="lungo/src/Lungo.Constants.js"></script>
+    <script src="lungo/src/Lungo.Element.js"></script>
+    <script src="lungo/src/Lungo.Events.js"></script>
+    <script src="lungo/src/Lungo.Notification.js"></script>
+    <script src="lungo/src/router/Lungo.Router.js"></script>
+    <script src="lungo/src/router/Lungo.Router.History.js" ></script>
+    <script src="lungo/src/view/Lungo.View.Resize.js"></script>
+    <script src="lungo/src/view/Lungo.View.Article.js" ></script>
+    <script src="lungo/src/view/Lungo.View.Aside.js" ></script>
+    <script src="lungo/src/view/Lungo.View.Element.js"></script>
+    <script src="lungo/src/data/Lungo.Data.Cache.js"></script>
+    <script src="lungo/src/data/Lungo.Data.Sql.js"></script>
+    <script src="lungo/src/data/Lungo.Data.Storage.js"></script>
+    <script src="lungo/src/attributes/Lungo.Attributes.Data.js"></script>
+    <script src="lungo/src/Lungo.Fallback.js"></script>
+    <script src="lungo/src/boot/Lungo.Boot.Resources.js" ></script>
+    <script src="lungo/src/boot/Lungo.Boot.Stats.js" ></script>
+    <script src="lungo/src/boot/Lungo.Boot.Layout.js"></script>
+    <script src="lungo/src/boot/Lungo.Boot.Events.js"></script>
+    <script src="lungo/src/boot/Lungo.Boot.Data.js"></script>
+    <script src="lungo/src/boot/Lungo.Boot.Section.js"></script>
+    <script src="lungo/src/boot/Lungo.Boot.Article.js"></script>
+
+</head>
+
+<body>
+    
+
+    <section id="main">
+        <header>
+            <span class="title centered">正面</span>
+        </header>
+
+        <article id="main-article" class="indented current">
+            <div id="card" style="overflow:hidden;background-color:blue;margin-left:auto;margin-right:auto;">
+                <img src="images/pic.jpg" />
+            </div>
+            <div id="log"></div>
+        </atricle>
+    </section>
+
+    <section id="splash" data-transition="slide" >
+        <article class="indented splash current">
+            <img src="images/52mxp.png" style="margin-top:30%">
+            <div>
+                <a href="#" class="button blue big" data-icon="camera"><span class="icon camera"></span>拍照</a>
+                <a href="#" class="button blue big" data-icon="folder"><span class="icon folder"></span>选择照片</a>
+                <a href="#" class="button big" data-icon="book"><span class="icon book"></span>我的明信片</a>
+
+            </div>
+        </article>
+    </section>
+
+
+</body>
+</html>
+<script type="text/javascript">
+    function inspect(e) {
+        var msg = new Array();
+        for (prop in e) {
+            msg.push(prop + ": " + e[prop]);
+        };
+
+        alert(msg.join('\n'));
+    }
+
+    function puts(msg) {
+        $$('#log').text(msg);
+    }
+
+    var _touchInfo = function(event, type, el) {
+        el.addClass('success');
+        console.log('Captured', event);
+        $$('article').html('\
+            Event: ' + type + '\
+            Fingers: ' + event.fingers);
+    }
+
+    puts('ssssssss');
+
+    var card = $$('#card');
+
+    //init card size
+    var card_width = $$('#main').width()-20;
+    var card_height = card_width * 1.5;
+    //alert(card_width+", "+card_height);
+    card.style('width', (card_width)+"px");
+    card.style('height', (card_height)+"px");
+
+    card.tap(function(event){
+        //puts(event.x+","+event.y);
+        _touchInfo(event, 'drag', $$(this));
+    });
+</script>

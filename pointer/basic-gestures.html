@@ -1,0 +1,49 @@
+<!doctype html>
+<head>
+  <meta name="viewport" content="width=device-width">
+</head>
+
+<style>
+  #test {
+    background: green;
+    width: 480px;
+    height: 480px;
+    margin: 0 auto;
+    overflow: hidden;
+    color: white;
+    -ms-touch-action: none;
+  }
+
+  body {
+    overflow: hidden;
+  }
+</style>
+
+<div id="test">
+</div>
+
+Supported gestures: longpress, doubletap, pinchzoom.
+
+<!-- Pointer events library. -->
+<script src="./pointer.js"></script>
+<script>
+
+  var test = document.querySelector('#test');
+
+  test.addEventListener('gesturedoubletap', function() {
+    log('doubletap');
+  });
+
+  test.addEventListener('gesturelongpress', function() {
+    log('longpress');
+  });
+
+  test.addEventListener('gesturescale', function(e) {
+    log('scale: ' + e.scale);
+  });
+
+  function log(msg) {
+    test.innerHTML = msg + '<br/>' + test.innerHTML;
+  }
+
+</script>

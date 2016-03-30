@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我爱明信片</title>
+    <style>.delete { display: inline; }</style>
+    <script src="zepto.js"></script>
+    <script>
+    
+    $(document).ready(function(){
+        
+        // show delete buttons on swipe
+        // $('#items li').swipe(function(){
+        //   $('.delete').hide();
+        //   $('.delete', this).show();
+        // });
+
+        // delete row on tapping delete button
+        $('.delete').tap(function(){
+            alert("hello");
+            $(this).parent('li').remove();
+        });
+
+        // $('.delete').click(function(){
+        //     alert("hello");
+        //     $(this).parent('li').remove();
+        // });
+    });
+    </script>
+</head>
+
+<body>
+
+
+<ul id="items">
+  <li>List item 1 <span class="delete">DELETE</span></li>
+  <li>List item 2 <span class="delete">DELETE</span></li>
+</ul>
+</body>
+</html>

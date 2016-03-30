@@ -1,0 +1,370 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <style type="text/css">
+    html { height: 100%; }
+    body { height: 90%; }
+    .shadow {
+      -moz-box-shadow:    3px 3px 10px #aaa;
+      -webkit-box-shadow: 3px 3px 10px #aaa;
+      box-shadow:         3px 3px 10px #aaa;
+    }
+    </style>
+    <script src="jquery-1.7.2.min.js"></script>
+    <script src="raphael-min.js"></script>
+    <!-- <script src="../raphael.serialize.js"></script> -->
+    <script src="jquery.event.move.js"></script>
+
+
+</head>
+<body>
+    <div id="card" class="shadow" style="overflow:hidden;background:url(./images/bg.png);margin-top:30px;margin-left:auto;margin-right:auto;">
+    </div>
+    <!-- <a href="###" onclick="alert(paper.serialize.json())" >json</a> -->
+    <a href="###" onclick="rotate();" >旋转</a>
+    <a href="###" onclick="zoom(1.5);" >放大</a>
+    <div id="test"></div>
+</body>
+</html>
+<script type="text/javascript">
+
+    if (typeof String.prototype.start_with != 'function') {
+      String.prototype.start_with = function (str){
+        return this.slice(0, str.length) == str;
+      };
+    }
+
+	function inspect(e, options) {
+        if(options==null){
+            options = {};
+        }
+        var onlykey = options['onlykey']==null ? false : options['onlykey']
+        var prefix = options['prefix']==null ? '' : options['prefix']
+        var msg = new Array();
+        for (prop in e) {
+            if(prop.start_with(prefix)){
+                if(onlykey==true){
+                    msg.push(prop);
+                }else{
+                    msg.push(prop + ": " + e[prop]);
+                }
+            }
+            
+        };
+
+        if(onlykey==true){
+            alert(msg.join(', '));
+        }else{
+            alert(msg.join('\n'));
+        }
+        
+    }
+
+    function getImgSize(imgSrc, cb) {
+        var newImg = new Image();
+        newImg.onload = function() {
+          var height = newImg.height;
+          var width = newImg.width;
+          cb(width, height);
+          //alert ('The image size is '+width+'*'+height);
+        }
+        newImg.src = imgSrc; // this must be done AFTER setting onload
+    }
+    function log(msg) {
+        var test = $('#test');
+        test.prepend(msg +"<br>");
+    }
+
+    function processImg(cb){
+        // var newImg = new Image();
+        // newImg.src = imgSrc;
+        // Caman(newImg, function () {
+        //     this.curves('v', [0, 0], [100, 30], [180, 240], [255, 255]);
+        //     this.curves('r', [0, 0], [40, 200], [255, 255])
+        //     this.render();
+        //     cb(this.toImage().src);
+        // });
+        var fuck = Caman("#fuck", function () {
+            this.curves('v', [0, 0], [100, 30], [180, 240], [255, 255]);
+            this.curves('r', [0, 0], [40, 200], [255, 255])
+            this.render();
+            $("#fuck").css("display", "none");
+            this.save();
+            cb("");
+            //alert(this.toBase64());
+        });
+
+    }
+    // processImg(function(base64){
+    //     //$("#fuck2").attr("src", base64);
+    // });
+    // Caman.DEBUG = true;
+    // var test = Caman("#fuck", function () {
+    //     this.curves('v', [0, 0], [100, 30], [180, 240], [255, 255]);
+    //     this.curves('r', [0, 0], [40, 200], [255, 255])
+    //     this.render();
+
+    // });
+
+    
+    var paper = null;
+    var img = null;
+    var transform = {
+        'translate':{'x':0, 'y':0},
+        'rotate':0,
+        'scale':1
+    };
+    var src;
+    var imgX = 0;
+    var imgY = 0;
+
+    function kickback2(img, width, height, card_width, card_height){
+        if(img.attr('x')>0){
+            img.attr('x', 0);
+        }
+        if(img.attr('y')>0){
+            img.attr('y', 0);
+        }
+
+        var dx = width-card_width;
+        var dy = height-card_height;
+        if(img.attr('x') < -dx){
+            img.attr('x', -dx);
+        }
+        if(img.attr('y') < -dy){
+            img.attr('y', -dy);
+        }
+    }
+
+    function rotate(){
+        //inspect(bbox);
+        transform['rotate'] = transform['rotate'] + 90;
+        if(transform['rotate']>=360){
+            transform['rotate'] = transform['rotate'] - 360;
+        }
+        img.rotate(90);
+
+        //
+        fit_size();
+        restrict_position();
+    }
+
+    function zoom(scale){
+        transform['scale'] = transform['scale'] * scale;
+        //log(transform['scale']);
+        img.scale(scale, scale);
+    }
+
+    function translate(deltaX, deltaY){
+        transform['translate']['x'] = transform['translate']['x'] + deltaX;
+        transform['translate']['y'] = transform['translate']['y'] + deltaY;
+
+        deltaX = deltaX/transform['scale'];
+        deltaY = deltaY/transform['scale'];
+        if(transform['rotate']==0){
+            img.translate(deltaX, deltaY);
+        }else if(transform['rotate']==90){
+            img.translate(deltaY, -deltaX);
+        }else if(transform['rotate']==180){
+            img.translate(-deltaX, -deltaY);
+        }else if(transform['rotate']==270){
+            img.translate(-deltaY, deltaX);
+        }
+    }
+
+    function fit_size(){
+        //
+        var card_width = $('#card').width();
+        var card_height = $('#card').height();
+        var bbox = img.getBBox();
+
+        //
+        var img_size = calc_img_size(bbox.width, bbox.height, card_width, card_height);
+        //log(bbox.width+","+bbox.height+"; "+card_width+","+card_height+"; "+img_size.scale);
+        zoom(img_size.scale);
+    }
+
+    function restrict_position(){
+        var card_width = $('#card').width();
+        var card_height = $('#card').height();
+        var bbox = img.getBBox();
+
+        //
+        //log(bbox.x+","+bbox.y);
+        if(bbox.x > 0){
+            translate(-bbox.x,0);
+        }
+        if(bbox.x2 < card_width){
+            translate(card_width-bbox.x2, 0);
+        }
+        if(bbox.y > 0){
+            translate(0,-bbox.y);
+        }
+        if(bbox.y2 < card_height){
+            translate(0,card_height-bbox.y2);
+        }
+    }
+
+    function kickback(img, width, height, card_width, card_height){
+        
+        if( width > card_width ) {
+            if(img.attr('x')>0){
+                img.attr('x', 0);
+            }
+            var dx = width-card_width;
+            if(img.attr('x') < -dx){
+                img.attr('x', -dx);
+            }
+        } else {
+            if(img.attr('x')<0){
+                img.attr('x', 0);
+            }
+            var dx = card_width-width;
+            if(img.attr('x') > dx){
+                img.attr('x', dx);
+            }
+        }
+
+        if( height > card_height ) {
+            if(img.attr('y')>0){
+                img.attr('y', 0);
+            }
+            var dy = height-card_height;
+            if(img.attr('y') < -dy){
+                img.attr('y', -dy);
+            }
+        } else {
+            if(img.attr('y')<0){
+                img.attr('y', 0);
+            }
+            var dy = card_height-height;
+            if(img.attr('y') > dy){
+                img.attr('y', dy);
+            }
+        }
+
+    }
+
+    function init_card(){
+        var card = $('#card');
+
+        //init card size
+        var body_width = $(document.body).width();
+        var body_height = $(document.body).height();
+        //log(body_width+","+body_height);
+        if(body_width > body_height){
+            var card_height = body_height - 58;
+            var card_width = card_height * 1.5;
+        }else{
+            var card_width = body_width - 40;
+            var card_height = card_width * 1.5;
+        }
+        card.css('width', (card_width)+"px");
+        card.css('height', (card_height)+"px");
+
+        //init paper
+        if(paper!=null){
+            paper.clear();
+            paper.setSize(card_width, card_height);
+        }else{
+            paper = Raphael('card');
+            //inspect(paper, {'prefix':'setSize'});
+        }
+        
+    }
+
+    function calc_img_size(img_width, img_height, card_width, card_height){
+        //alert((img_width / img_height)+", "+(card_width / card_height));
+        if( (img_width / img_height) <= (card_width / card_height) ) {
+            var new_img_width = card_width; // 宽变，高随
+            var scale = new_img_width / img_width;
+            var new_img_height = scale * img_height;
+            
+            //log(scale);
+        } else {
+            var new_img_height = card_height; // 高变，宽随
+            var scale = new_img_height / img_height;
+            var new_img_width = scale * img_width;
+            
+        }
+        return { width:new_img_width, height:new_img_height, scale:scale };old
+    }
+
+    function add_image(src){
+        var card_width = $('#card').width();
+        var card_height = $('#card').height();
+        //log(card_width+","+card_height);
+        getImgSize(src, function(img_width, img_height){
+            // var img_size = calc_img_size(img_width, img_height, card_width, card_height);
+            // img_width = img_size.width;
+            // img_height = img_size.height;
+
+            img = paper.image(src, 0, 0, img_width, img_height);
+            fit_size();
+            //kickback(img, img_width, img_height, card_width, card_height);
+            restrict_position();
+
+            $(img.node).bind('movestart', function(e) {
+                // img.ox = img.attr('x');
+                // img.oy = img.attr('y');
+            })
+            
+            $(img.node).bind('move', function(e) {
+                //inspect(e);
+                //log(e.deltaX+","+e.deltaY+","+e.distX+","+e.distY);
+
+                translate(e.deltaX, e.deltaY);
+                
+                // img.attr('x', (img.ox+e.distX));
+                // img.attr('y', (img.oy+e.distY));
+    
+
+            })
+
+            $(img.node).bind('moveend', function(e) {
+                //kickback(img, img_width, img_height, card_width, card_height);
+                restrict_position();
+            })
+            
+        });
+    }
+
+    function letsgo(){
+
+        init_card();
+        //add_image(src);
+        //add_image("./images/pic.jpg");
+        //add_image("/Users/wuminzhe/Pictures/QQ20121026-1.png");
+        
+        //add_image("http://pic.52mxp.com/backgrounds/4bf3d25d32bba79bffe2fee7b728b430ce091b19.png")
+        add_image("./images/small.jpg");
+
+    }
+
+    $(document).ready(function(){
+        var href = window.location.href;
+        var pos = href.indexOf("?")
+
+        src = href.substring(pos+1);
+        //alert(img_src);
+
+        letsgo();
+
+        // $(window).resize(function(){
+        //     letsgo();
+        // });
+
+    });
+
+    
+
+    
+
+    
+
+
+
+</script>

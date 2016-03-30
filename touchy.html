@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <script src="jquery-1.7.2.min.js"></script>
+    <!-- <script src="jquery.touchy.js"></script> -->
+
+</head>
+<body>
+	<div id="card" style="overflow:hidden;background-color:blue;margin-left:auto;margin-right:auto;">
+        <img id="card_img" src="images/pic.jpg" />
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+	function inspect(e) {
+        var msg = new Array();
+        for (prop in e) {
+            msg.push(prop + ": " + e[prop]);
+        };
+
+        alert(msg.join('\n'));
+    }
+
+    var card = $('#card');
+    //init card size
+    var card_width = $('body').width();
+    var card_height = card_width * 5.5;
+    //alert(card_width+", "+card_height);
+    card.css('width', (card_width)+"px");
+    card.css('height', (card_height)+"px");
+
+    var handleTouchyDrag = function (e, phase, $target, data) {
+        inspect(data);
+        //alert(data.movePoint);
+        //$target.css({'webkitTransform':'scale(' + data.scale + ',' + data.scale + ')'});
+    };
+    //$('#card_img').bind('touchy-drag', handleTouchyDrag);
+</script>
